@@ -6,8 +6,8 @@ import Image from 'next/image'
 import { supabase } from '@/lib/supabase'
 import type { Program } from '@/types'
 
-const STREAM_URL = process.env.NEXT_PUBLIC_STREAM_URL || 'http://195.154.79.204:8019/stream'
-const FALLBACK_URL = 'http://195.154.79.204:8019/'
+const STREAM_URL = process.env.NEXT_PUBLIC_STREAM_URL || 'https://play14.tikast.com:20126/stream'
+const FALLBACK_URL = 'https://play14.tikast.com:20126/'
 
 const DAYS_LABEL: Record<string, string> = {
   all: 'Todos los días',
