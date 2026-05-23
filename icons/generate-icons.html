@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Generador de Íconos — CORPOSEPI STEREO</title>
+  <style>
+    body { font-family: sans-serif; background: #111; color: #eee; padding: 24px; }
+    h2 { margin-bottom: 16px; }
+    canvas { display: block; margin: 8px; border-radius: 16px; }
+    .icons { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; }
+    button {
+      background: #8B3220; color: white; border: none; padding: 12px 24px;
+      border-radius: 8px; font-size: 14px; cursor: pointer; margin-top: 16px;
+    }
+    button:hover { background: #C4501C; }
+    p { color: #aaa; font-size: 13px; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <h2>Generador de Íconos — CORPOSEPI STEREO</h2>
+  <p>Haz clic en "Generar y Descargar" para crear todos los íconos necesarios para la PWA.</p>
+  <div class="icons" id="iconContainer"></div>
+  <button onclick="generateAll()">Generar y Descargar Todos</button>
+  <p id="status"></p>
+
+  <script>
+    const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+
+    function drawIcon(size) {
+      const canvas = document.createElement('canvas');
+      canvas.width = size; canvas.height = size;
+      const ctx = canvas.getContext('2d');
+
+      // Background
+      const grad = ctx.createRadialGradient(size*0.4, size*0.35, 0, size/2, size/2, size*0.55);
+      grad.addColorStop(0, '#C4501C');
+      grad.addColorStop(1, '#5C1A0A');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.roundRect(0, 0, size, size, size * 0.2);
+      ctx.fill();
+
+      // Outer circle
+      ctx.strokeStyle = 'rgba(232,130,79,0.6)';
+      ctx.lineWidth = size * 0.025;
+      ctx.beginPath();
+      ctx.arc(size/2, size/2, size*0.38, 0, Math.PI*2);
+      ctx.stroke();
+
+      // Inner circle
+      ctx.strokeStyle = 'rgba(232,130,79,0.3)';
+      ctx.lineWidth = size * 0.015;
+      ctx.beginPath();
+      ctx.arc(size/2, size/2, size*0.28, 0, Math.PI*2);
+      ctx.stroke();
+
+      // CS text
+      ctx.fillStyle = 'white';
+      ctx.font = `bold ${size*0.22}px Arial`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('CS', size/2, size*0.44);
+
+      // STEREO text
+      ctx.font = `bold ${size*0.075}px Arial`;
+      ctx.fillStyle = 'rgba(255,200,150,0.9)';
+      ctx.fillText('STEREO', size/2, size*0.66);
+
+      // Radio waves
+      const cx = size/2, cy = size/2;
+      const waveColors = ['rgba(232,130,79,0.5)', 'rgba(232,130,79,0.3)', 'rgba(232,130,79,0.15)'];
+      [0.46, 0.52, 0.58].forEach((r, i) => {
+        ctx.strokeStyle = waveColors[i];
+        ctx.lineWidth = size * 0.012;
+        ctx.beginPath();
+        ctx.arc(cx, cy, size * r, Math.PI * 1.1, Math.PI * 1.9);
+        ctx.stroke();
+      });
+
+      return canvas;
+    }
+
+    function generateAll() {
+      const container = document.getElementById('iconContainer');
+      container.innerHTML = '';
+      const status = document.getElementById('status');
+      let count = 0;
+
+      sizes.forEach(size => {
+        const canvas = drawIcon(size);
+        canvas.title = `${size}x${size}`;
+        container.appendChild(canvas);
+
+        // Auto download
+        canvas.toBlob(blob => {
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = `icon-${size}.png`;
+          a.click();
+          count++;
+          status.textContent = `Descargando... ${count}/${sizes.length} íconos`;
+          if (count === sizes.length) {
+            status.textContent = `✓ ${count} íconos generados. Muévelos a la carpeta /icons/`;
+          }
+        }, 'image/png');
+      });
+    }
+
+    // Preview on load
+    window.onload = () => {
+      const container = document.getElementById('iconContainer');
+      sizes.forEach(size => {
+        const canvas = drawIcon(size);
+        canvas.style.width = Math.min(size, 96) + 'px';
+        canvas.style.height = Math.min(size, 96) + 'px';
+        container.appendChild(canvas);
+      });
+    };
+  </script>
+</body>
+</html>

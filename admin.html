@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin · CORPOSEPI STEREO</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;900&family=Raleway:wght@300;400;600;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #8B3220;
+      --primary-light: #C4501C;
+      --accent: #E8824F;
+      --gold: #D4A853;
+      --bg-dark: #070709;
+      --bg-card: rgba(255,255,255,0.04);
+      --text: #F0EDE8;
+      --text-muted: rgba(240,237,232,0.55);
+      --border: rgba(139,50,32,0.3);
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* BACKGROUND */
+    .bg-wrap {
+      position: fixed; inset: 0; z-index: 0; overflow: hidden;
+    }
+    .bg-img {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 80% at 10% 20%, rgba(139,50,32,0.3) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 60% at 85% 75%, rgba(196,80,28,0.2) 0%, transparent 55%),
+        linear-gradient(135deg, #070709 0%, #0D0508 50%, #070709 100%);
+    }
+    .grid-lines {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(139,50,32,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139,50,32,0.07) 1px, transparent 1px);
+      background-size: 50px 50px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+    }
+    .particles {
+      position: absolute; inset: 0; overflow: hidden;
+    }
+    .particle {
+      position: absolute; border-radius: 50%;
+      background: var(--accent); opacity: 0;
+      animation: particle-float 8s ease-in-out infinite;
+    }
+    @keyframes particle-float {
+      0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+      10%  { opacity: 0.6; }
+      90%  { opacity: 0.1; }
+      100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+    }
+
+    /* MAIN LAYOUT */
+    .admin-wrap {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    /* LEFT PANEL */
+    .left-panel {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 60px 48px;
+      border-right: 1px solid var(--border);
+      position: relative;
+    }
+    .left-panel::after {
+      content: '';
+      position: absolute; right: -1px; top: 20%; bottom: 20%;
+      width: 1px;
+      background: linear-gradient(180deg, transparent, var(--accent), transparent);
+    }
+
+    .brand-logo {
+      width: 120px; height: 120px; object-fit: contain;
+      margin-bottom: 28px;
+      filter: drop-shadow(0 0 40px rgba(139,50,32,0.8));
+      animation: logo-pulse 3s ease-in-out infinite;
+    }
+    @keyframes logo-pulse {
+      0%,100%{ filter:drop-shadow(0 0 30px rgba(139,50,32,0.6)); }
+      50%{ filter:drop-shadow(0 0 60px rgba(196,80,28,0.9)); }
+    }
+
+    .brand-name {
+      font-family: 'Raleway', sans-serif;
+      font-size: 32px; font-weight: 800; letter-spacing: 4px;
+      text-align: center; margin-bottom: 6px;
+      background: linear-gradient(135deg, #F0EDE8, var(--accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .brand-sub {
+      font-size: 11px; letter-spacing: 4px; color: var(--text-muted);
+      text-align: center; margin-bottom: 40px;
+      text-transform: uppercase;
+    }
+
+    .live-indicator {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(139,50,32,0.15); border: 1px solid rgba(139,50,32,0.4);
+      padding: 10px 20px; border-radius: 50px; margin-bottom: 32px;
+    }
+    .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: blink 1.2s infinite; }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
+    .live-indicator span { font-size: 11px; letter-spacing: 2px; color: var(--accent); font-weight: 600; }
+
+    .stat-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; max-width: 360px;
+    }
+    .stat-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 16px; text-align: center;
+    }
+    .stat-value { font-size: 24px; font-weight: 700; color: var(--accent); }
+    .stat-label { font-size: 10px; color: var(--text-muted); letter-spacing: 2px; margin-top: 4px; }
+
+    .back-btn {
+      position: absolute; top: 24px; left: 24px;
+      display: flex; align-items: center; gap: 8px;
+      color: var(--text-muted); text-decoration: none; font-size: 12px; letter-spacing: 1px;
+      transition: color 0.2s;
+    }
+    .back-btn:hover { color: var(--accent); }
+
+    /* RIGHT PANEL */
+    .right-panel {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 60px 48px;
+    }
+
+    .login-header { text-align: center; margin-bottom: 36px; }
+    .login-header h2 {
+      font-family: 'Raleway', sans-serif; font-size: 28px; font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .login-header p { font-size: 13px; color: var(--text-muted); }
+
+    .login-card {
+      width: 100%; max-width: 420px;
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(30px);
+      border: 1px solid var(--border); border-radius: 24px;
+      padding: 40px 36px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+      position: relative; overflow: hidden;
+    }
+    .login-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(232,130,79,0.6), transparent);
+    }
+
+    .form-group { margin-bottom: 20px; }
+    .form-label {
+      display: block; font-size: 11px; font-weight: 600; letter-spacing: 2px;
+      color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;
+    }
+    .form-input {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 14px 18px;
+      color: var(--text); font-size: 14px; font-family: 'Montserrat', sans-serif;
+      transition: all 0.3s; outline: none;
+    }
+    .form-input:focus {
+      border-color: var(--primary-light);
+      background: rgba(139,50,32,0.1);
+      box-shadow: 0 0 0 3px rgba(139,50,32,0.15);
+    }
+    .form-input::placeholder { color: rgba(240,237,232,0.3); }
+
+    .form-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .remember-label { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); cursor: pointer; }
+    .remember-label input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--primary-light); }
+    .forgot-link { font-size: 12px; color: var(--accent); text-decoration: none; }
+    .forgot-link:hover { text-decoration: underline; }
+
+    .login-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white; border: none; border-radius: 12px;
+      padding: 16px; font-size: 14px; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; cursor: pointer; transition: all 0.3s;
+      box-shadow: 0 6px 20px rgba(139,50,32,0.4);
+      font-family: 'Montserrat', sans-serif;
+    }
+    .login-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(139,50,32,0.6); }
+    .login-btn:active { transform: translateY(0); }
+    .login-btn.loading { opacity: 0.7; pointer-events: none; }
+
+    .divider-row {
+      display: flex; align-items: center; gap: 12px; margin: 24px 0;
+    }
+    .divider-row hr { flex: 1; border: none; border-top: 1px solid var(--border); }
+    .divider-row span { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+
+    .tikast-btn {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%;
+      background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 12px;
+      padding: 14px; color: var(--text); text-decoration: none;
+      font-size: 13px; font-weight: 500; transition: all 0.3s;
+    }
+    .tikast-btn:hover { border-color: var(--primary-light); background: rgba(139,50,32,0.1); }
+    .tikast-badge {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white; font-size: 9px; font-weight: 700; letter-spacing: 2px;
+      padding: 3px 8px; border-radius: 50px; text-transform: uppercase;
+    }
+
+    .error-msg {
+      display: none; background: rgba(220,50,50,0.1); border: 1px solid rgba(220,50,50,0.3);
+      border-radius: 10px; padding: 12px 16px; font-size: 12px; color: #FF7070;
+      margin-bottom: 16px; text-align: center;
+    }
+    .error-msg.show { display: block; animation: shake 0.4s ease; }
+    @keyframes shake {
+      0%,100%{transform:translateX(0);}
+      25%{transform:translateX(-6px);}
+      75%{transform:translateX(6px);}
+    }
+
+    /* DASHBOARD */
+    .dashboard { display: none; width: 100%; }
+    .dashboard.show { display: block; animation: fade-in 0.5s ease; }
+    @keyframes fade-in { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:none;} }
+
+    .dash-title { font-family: 'Raleway', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+    .dash-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 28px; }
+
+    .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+    .dash-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 20px; cursor: pointer; text-decoration: none; color: var(--text);
+      transition: all 0.3s; display: flex; flex-direction: column; gap: 8px;
+    }
+    .dash-card:hover { border-color: var(--primary-light); background: rgba(139,50,32,0.1); transform: translateY(-2px); }
+    .dash-card-icon { font-size: 24px; }
+    .dash-card-label { font-size: 11px; color: var(--text-muted); letter-spacing: 1px; }
+    .dash-card-title { font-size: 14px; font-weight: 600; }
+
+    .logout-btn {
+      width: 100%; background: none; border: 1px solid var(--border); border-radius: 12px;
+      padding: 12px; color: var(--text-muted); font-size: 12px; letter-spacing: 2px;
+      text-transform: uppercase; cursor: pointer; font-family: 'Montserrat', sans-serif;
+      transition: all 0.3s;
+    }
+    .logout-btn:hover { border-color: rgba(220,50,50,0.4); color: #FF7070; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .admin-wrap { grid-template-columns: 1fr; }
+      .left-panel { display: none; }
+      .right-panel { padding: 40px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-wrap">
+  <div class="bg-img"></div>
+  <div class="grid-lines"></div>
+  <div class="particles" id="particles"></div>
+</div>
+
+<div class="admin-wrap">
+  <!-- LEFT -->
+  <div class="left-panel">
+    <a href="index.html" class="back-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+      Volver al sitio
+    </a>
+
+    <img src="logo.png" alt="CORPOSEPI" class="brand-logo"
+         onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2248%22 fill=%22%238B3220%22/><text x=%2250%22 y=%2258%22 text-anchor=%22middle%22 font-size=%2220%22 font-weight=%22bold%22 fill=%22white%22 font-family=%22Arial%22>CS</text></svg>'" />
+
+    <div class="brand-name">CORPOSEPI</div>
+    <div class="brand-sub">Panel de Administración</div>
+
+    <div class="live-indicator">
+      <div class="live-dot"></div>
+      <span>TRANSMISIÓN ACTIVA</span>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-value" id="listenerCount">—</div>
+        <div class="stat-label">Oyentes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">24/7</div>
+        <div class="stat-label">Cobertura</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">HD</div>
+        <div class="stat-label">Calidad</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="uptime">—</div>
+        <div class="stat-label">Uptime</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right-panel">
+
+    <!-- LOGIN FORM -->
+    <div id="loginSection">
+      <div class="login-header">
+        <h2>Acceso al Panel</h2>
+        <p>Ingresa tus credenciales de administrador</p>
+      </div>
+
+      <div class="login-card">
+        <div class="error-msg" id="errorMsg">Usuario o contraseña incorrectos</div>
+
+        <div class="form-group">
+          <label class="form-label">Usuario</label>
+          <input type="text" class="form-input" id="username" placeholder="Usuario admin" autocomplete="username" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contraseña</label>
+          <input type="password" class="form-input" id="password" placeholder="••••••••" autocomplete="current-password"
+                 onkeydown="if(event.key==='Enter')doLogin()" />
+        </div>
+
+        <div class="form-row">
+          <label class="remember-label">
+            <input type="checkbox" id="rememberMe" /> Recordarme
+          </label>
+          <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        <button class="login-btn" id="loginBtn" onclick="doLogin()">Ingresar</button>
+
+        <div class="divider-row">
+          <hr /><span>O accede directamente</span><hr />
+        </div>
+
+        <a href="http://play14.tikast.com:2199" target="_blank" rel="noopener" class="tikast-btn">
+          <span>Ir al Panel Tikast</span>
+          <span class="tikast-badge">Virtualtronics</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- DASHBOARD (tras login) -->
+    <div class="dashboard" id="dashboard">
+      <div class="dash-title">Bienvenido 👋</div>
+      <div class="dash-sub" id="dashSubtitle">Panel de Control · CORPOSEPI STEREO</div>
+
+      <div class="dash-grid">
+        <a href="http://play14.tikast.com:2199" target="_blank" class="dash-card">
+          <div class="dash-card-icon">🎛️</div>
+          <div class="dash-card-label">Control de transmisión</div>
+          <div class="dash-card-title">Panel Tikast</div>
+        </a>
+        <a href="http://195.154.79.204:8019/index.html?sid=1" target="_blank" class="dash-card">
+          <div class="dash-card-icon">📡</div>
+          <div class="dash-card-label">Vista de oyentes</div>
+          <div class="dash-card-title">Página de escucha</div>
+        </a>
+        <a href="index.html" class="dash-card">
+          <div class="dash-card-icon">🌐</div>
+          <div class="dash-card-label">Sitio público</div>
+          <div class="dash-card-title">Ir al sitio web</div>
+        </a>
+        <div class="dash-card" onclick="copyStreamUrl()">
+          <div class="dash-card-icon">🔗</div>
+          <div class="dash-card-label">Copiar enlace</div>
+          <div class="dash-card-title">URL de streaming</div>
+        </div>
+      </div>
+
+      <button class="logout-btn" onclick="doLogout()">Cerrar sesión</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  /* PARTICLES */
+  const pWrap = document.getElementById('particles');
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `
+      left:${Math.random()*100}%;
+      width:${2+Math.random()*4}px;
+      height:${2+Math.random()*4}px;
+      animation-delay:${Math.random()*8}s;
+      animation-duration:${6+Math.random()*6}s;
+    `;
+    pWrap.appendChild(p);
+  }
+
+  /* STATS */
+  function updateStats() {
+    document.getElementById('uptime').textContent = new Date().toLocaleTimeString('es', {hour:'2-digit',minute:'2-digit'});
+  }
+  updateStats(); setInterval(updateStats, 60000);
+
+  /* LOGIN */
+  const ADMIN_USER = 'admin';
+  const ADMIN_PASS = 'corposepi2025';
+
+  function doLogin() {
+    const user = document.getElementById('username').value.trim();
+    const pass = document.getElementById('password').value;
+    const btn  = document.getElementById('loginBtn');
+    const err  = document.getElementById('errorMsg');
+
+    btn.classList.add('loading');
+    btn.textContent = 'Verificando...';
+    err.classList.remove('show');
+
+    setTimeout(() => {
+      if (user === ADMIN_USER && pass === ADMIN_PASS) {
+        if (document.getElementById('rememberMe').checked) {
+          localStorage.setItem('csAdmin', btoa(user + ':' + pass));
+        }
+        showDashboard(user);
+      } else {
+        err.classList.add('show');
+        btn.classList.remove('loading');
+        btn.textContent = 'Ingresar';
+        document.getElementById('password').value = '';
+        document.getElementById('password').focus();
+      }
+    }, 900);
+  }
+
+  function showDashboard(user) {
+    document.getElementById('loginSection').style.display = 'none';
+    document.getElementById('dashSubtitle').textContent = `Sesión iniciada como ${user} · CORPOSEPI STEREO`;
+    document.getElementById('dashboard').classList.add('show');
+  }
+
+  function doLogout() {
+    localStorage.removeItem('csAdmin');
+    document.getElementById('loginSection').style.display = '';
+    document.getElementById('dashboard').classList.remove('show');
+    document.getElementById('username').value = '';
+    document.getElementById('password').value = '';
+    document.getElementById('loginBtn').textContent = 'Ingresar';
+    document.getElementById('loginBtn').classList.remove('loading');
+  }
+
+  function copyStreamUrl() {
+    navigator.clipboard.writeText('http://195.154.79.204:8019/stream')
+      .then(() => alert('¡URL copiada al portapapeles!\nhttp://195.154.79.204:8019/stream'))
+      .catch(() => prompt('Copia esta URL:', 'http://195.154.79.204:8019/stream'));
+  }
+
+  /* AUTO-LOGIN */
+  const saved = localStorage.getItem('csAdmin');
+  if (saved) {
+    try {
+      const [u, p] = atob(saved).split(':');
+      if (u === ADMIN_USER && p === ADMIN_PASS) showDashboard(u);
+    } catch(e) { localStorage.removeItem('csAdmin'); }
+  }
+</script>
+</body>
+</html>
