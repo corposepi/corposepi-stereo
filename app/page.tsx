@@ -93,22 +93,35 @@ export default function HomePage() {
     if (!audio) return
     if (isPlaying) {
       audio.pause()
+      audio.src = ''
       setIsPlaying(false)
     } else {
-      audio.src = STREAM_URL
-      audio.play()
-        .then(() => setIsPlaying(true))
-        .catch(() => {
-          audio.src = FALLBACK_URL
-          audio.play().then(() => setIsPlaying(true)).catch(() => {})
-        })
-      if ('mediaSession' in navigator) {
-        navigator.mediaSession.metadata = new MediaMetadata({
-          title: 'CORPOSEPI STEREO',
-          artist: 'Educación · Pensamiento · Innovación',
-          album: 'En Vivo',
-        })
+      // Forzar recarga del stream cada vez (evita caché)
+      const urls = [
+        `${STREAM_URL}?t=${Date.now()}`,
+        `${FALLBACK_URL}?t=${Date.now()}`,
+        STREAM_URL,
+        FALLBACK_URL,
+      ]
+      let idx = 0
+      const tryPlay = () => {
+        if (idx >= urls.length) return
+        audio.src = urls[idx]
+        audio.load()
+        audio.play()
+          .then(() => {
+            setIsPlaying(true)
+            if ('mediaSession' in navigator) {
+              navigator.mediaSession.metadata = new MediaMetadata({
+                title: 'CORPOSEPI STEREO',
+                artist: 'Educación · Pensamiento · Innovación',
+                album: 'En Vivo',
+              })
+            }
+          })
+          .catch(() => { idx++; tryPlay() })
       }
+      tryPlay()
     }
   }
 
