@@ -5,7 +5,6 @@ export const metadata: Metadata = {
   title: 'CORPOSEPI STEREO',
   description: 'La voz de la educación y el pensamiento innovador — Radio en vivo 24/7',
   keywords: ['radio', 'educación', 'CORPOSEPI', 'streaming', 'en vivo'],
-  manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
@@ -36,6 +35,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;900&family=Raleway:wght@300;400;600;800&display=swap"
           rel="stylesheet"
         />
+        {/* Manifest con versión para forzar actualización en todos los dispositivos */}
+        <link rel="manifest" href="/manifest.json?v=3" />
         {/* Iconos para iOS (Safari/iPhone) */}
         <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152.png" />
         <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192.png" />
