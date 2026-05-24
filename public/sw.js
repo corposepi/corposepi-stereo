@@ -1,4 +1,4 @@
-const CACHE_NAME = 'corposepi-stereo-v1';
+const CACHE_NAME = 'corposepi-stereo-v3';
 const ASSETS = [
   '/',
   '/index.html',
