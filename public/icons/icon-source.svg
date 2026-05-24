@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:gn="http://www.goodnotes.com/gn-svg" width="512" height="512" viewBox="0 0 512 512">
+
+  <!-- Fondo redondeado color corporativo -->
+  <rect width="512" height="512" rx="90" ry="90" fill="#8B3220"/>
+
+  <!-- Anillo exterior decorativo -->
+  <circle cx="256" cy="262" r="196" fill="none" stroke="#C4501C" stroke-width="5"/>
+
+  <!-- Anillo interior sutil -->
+  <circle cx="256" cy="262" r="175" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.2"/>
+
+  <!-- Swirl característico del logo: arco superior que da efecto espiral -->
+  <path d="M 415 205 Q 445 148 405 100 Q 365 52 298 46 Q 238 40 188 72 Q 142 102 132 158"
+        fill="none" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" opacity="0.95"/>
+
+  <!-- Ala izquierda del fénix -->
+  <path d="M 240 272
+           C 208 248, 165 216, 118 170
+           C 140 202, 142 228, 138 252
+           C 108 226, 80 215, 62 208
+           C 108 250, 130 270, 142 280
+           C 114 268, 88 274, 76 282
+           C 120 294, 162 286, 192 278 Z"
+        fill="#FFFFFF"/>
+
+  <!-- Ala derecha del fénix (espejo) -->
+  <path d="M 272 272
+           C 304 248, 347 216, 394 170
+           C 372 202, 370 228, 374 252
+           C 404 226, 432 215, 450 208
+           C 404 250, 382 270, 370 280
+           C 398 268, 424 274, 436 282
+           C 392 294, 350 286, 320 278 Z"
+        fill="#FFFFFF"/>
+
+  <!-- Cuerpo del fénix -->
+  <ellipse cx="256" cy="290" rx="22" ry="44" fill="#FFFFFF"/>
+
+  <!-- Cabeza (ligeramente hacia la derecha, mirando a la derecha) -->
+  <ellipse cx="270" cy="242" rx="21" ry="19" fill="#FFFFFF"/>
+
+  <!-- Pico -->
+  <path d="M 283 238 L 312 230 L 282 250 Z" fill="#FFFFFF"/>
+
+  <!-- Ojo (espacio negativo) -->
+  <circle cx="275" cy="239" r="5" fill="#8B3220"/>
+
+  <!-- Plumas de la cola - 5 plumas -->
+  <path d="M 236 328 Q 220 364 206 412" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round"/>
+  <path d="M 248 332 Q 238 372 234 418" fill="none" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round"/>
+  <path d="M 260 334 Q 258 376 258 422" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round"/>
+  <path d="M 272 332 Q 278 372 282 418" fill="none" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round"/>
+  <path d="M 284 328 Q 300 364 316 412" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round"/>
+
+  <!-- Plumas externas más sutiles -->
+  <path d="M 226 322 Q 205 350 194 390" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.55"/>
+  <path d="M 294 322 Q 315 350 328 390" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.55"/>
+
+</svg>
