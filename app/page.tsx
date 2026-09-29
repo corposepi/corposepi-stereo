@@ -7,12 +7,16 @@ import { supabase } from '@/lib/supabase'
 import type { Program } from '@/types'
 
 const FALLBACK_PROGRAMS: Program[] = [
-  { id: '1', title: 'Buenos Días CORPOSEPI', host: 'Noticias educativas y reflexión matutina', start_time: '06:00', end_time: '08:00', days: 'weekdays', description: null, is_active: true, order_num: 1 },
-  { id: '2', title: 'Pensamiento Innovador', host: 'Debates pedagógicos y tendencias educativas', start_time: '08:00', end_time: '10:00', days: 'weekdays', description: null, is_active: true, order_num: 2 },
-  { id: '3', title: 'Voces Estudiantiles', host: 'Espacio de estudiantes y proyectos escolares', start_time: '10:00', end_time: '12:00', days: 'all', description: null, is_active: true, order_num: 3 },
-  { id: '4', title: 'Descanso Cultural', host: 'Música, arte y cultura regional', start_time: '12:00', end_time: '14:00', days: 'all', description: null, is_active: true, order_num: 4 },
-  { id: '5', title: 'Familia y Educación', host: 'Orientación para padres y comunidad', start_time: '14:00', end_time: '16:00', days: 'all', description: null, is_active: true, order_num: 5 },
-  { id: '6', title: 'Tarde Juvenil', host: 'Contenido para jóvenes: música, cultura y más', start_time: '16:00', end_time: '18:00', days: 'all', description: null, is_active: true, order_num: 6 },
+  { id: '1',  title: 'Madrugada Musical',      host: 'Música sin pausa',                          start_time: '00:00', end_time: '06:00', days: 'all',      description: null, is_active: true, order_num: 1 },
+  { id: '2',  title: 'Buenos Días CORPOSEPI',  host: 'Noticias educativas y reflexión matutina',  start_time: '06:00', end_time: '08:00', days: 'weekdays', description: null, is_active: true, order_num: 2 },
+  { id: '3',  title: 'Pensamiento Innovador',  host: 'Debates pedagógicos y tendencias',          start_time: '08:00', end_time: '10:00', days: 'weekdays', description: null, is_active: true, order_num: 3 },
+  { id: '4',  title: 'Voces Estudiantiles',    host: 'Espacio de estudiantes y proyectos',        start_time: '10:00', end_time: '12:00', days: 'all',      description: null, is_active: true, order_num: 4 },
+  { id: '5',  title: 'Descanso Cultural',      host: 'Música, arte y cultura regional',           start_time: '12:00', end_time: '14:00', days: 'all',      description: null, is_active: true, order_num: 5 },
+  { id: '6',  title: 'Familia y Educación',    host: 'Orientación para padres y comunidad',       start_time: '14:00', end_time: '16:00', days: 'all',      description: null, is_active: true, order_num: 6 },
+  { id: '7',  title: 'Tarde Juvenil',          host: 'Contenido para jóvenes: música y cultura',  start_time: '16:00', end_time: '18:00', days: 'all',      description: null, is_active: true, order_num: 7 },
+  { id: '8',  title: 'Noticiero CORPOSEPI',    host: 'Resumen informativo del día',               start_time: '18:00', end_time: '20:00', days: 'all',      description: null, is_active: true, order_num: 8 },
+  { id: '9',  title: 'Noche de Talentos',      host: 'Arte, música y expresión cultural',         start_time: '20:00', end_time: '22:00', days: 'all',      description: null, is_active: true, order_num: 9 },
+  { id: '10', title: 'Cierre del Día',         host: 'Reflexiones y música de cierre',            start_time: '22:00', end_time: '24:00', days: 'all',      description: null, is_active: true, order_num: 10 },
 ]
 
 // URLs HTTPS del stream — siempre seguras
@@ -99,11 +103,20 @@ export default function HomePage() {
     }
   }, [])
 
-  function isCurrentProgram(prog: Program): boolean {
-    const [sh] = prog.start_time.split(':').map(Number)
-    const [eh] = prog.end_time.split(':').map(Number)
-    return currentHour >= sh && currentHour < eh
+  function toMinutes(time: string): number {
+    const [h, m] = time.split(':').map(Number)
+    return h * 60 + (m || 0)
   }
+
+  function isCurrentProgram(prog: Program): boolean {
+    const now = new Date()
+    const nowMin = now.getHours() * 60 + now.getMinutes()
+    const start = toMinutes(prog.start_time)
+    const end = prog.end_time === '24:00' ? 24 * 60 : toMinutes(prog.end_time)
+    return nowMin >= start && nowMin < end
+  }
+
+  const currentProgram = programs.find(isCurrentProgram)
 
   function togglePlay() {
     const audio = audioRef.current
@@ -215,13 +228,21 @@ export default function HomePage() {
           </div>
 
           <div className="now-playing">
-            <div className="np-label">Transmitiendo ahora</div>
+            <div className="np-label">
+              {currentProgram ? '📻 AL AIRE AHORA' : 'Transmitiendo ahora'}
+            </div>
             <div className="marquee-wrap">
               <div className={`marquee-inner ${isPlaying ? '' : 'paused'}`}>
-                <span className="np-track">♪ &nbsp; CORPOSEPI STEREO — En Vivo &nbsp;·&nbsp; CORPOSEPI STEREO — En Vivo &nbsp;·&nbsp;</span>
+                <span className="np-track">
+                  {currentProgram
+                    ? `♪  ${currentProgram.title}  ·  ${currentProgram.title}  ·  `
+                    : '♪  CORPOSEPI STEREO — En Vivo  ·  CORPOSEPI STEREO — En Vivo  ·  '}
+                </span>
               </div>
             </div>
-            <div className="np-artist">Educación · Pensamiento · Innovación</div>
+            <div className="np-artist">
+              {currentProgram?.host ?? 'Educación · Pensamiento · Innovación'}
+            </div>
           </div>
 
           <div className="player-controls">
