@@ -1,7 +1,8 @@
 import { createClient } from '@supabase/supabase-js'
 
-// Client-side (anon key — sólo lectura pública)
-export const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+export const supabase = (url && key && !url.includes('XXXX'))
+  ? createClient(url, key)
+  : null

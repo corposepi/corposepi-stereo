@@ -4,6 +4,7 @@ import { verifyToken } from '@/lib/auth'
 
 // GET /api/programs — público, devuelve todos los programas activos
 export async function GET() {
+  if (!supabaseAdmin) return NextResponse.json([], { status: 200 })
   try {
     const { data, error } = await supabaseAdmin
       .from('programs')
@@ -13,7 +14,6 @@ export async function GET() {
     if (error) return NextResponse.json([], { status: 200 })
     return NextResponse.json(data ?? [])
   } catch {
-    // Supabase no configurado — devuelve array vacío para no romper la UI
     return NextResponse.json([], { status: 200 })
   }
 }
@@ -35,6 +35,8 @@ export async function POST(req: NextRequest) {
   if (!title?.trim()) {
     return NextResponse.json({ error: 'El título es obligatorio' }, { status: 400 })
   }
+
+  if (!supabaseAdmin) return NextResponse.json({ error: 'Base de datos no configurada' }, { status: 503 })
 
   const { data, error } = await supabaseAdmin
     .from('programs')

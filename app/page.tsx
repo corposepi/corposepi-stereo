@@ -6,6 +6,15 @@ import Image from 'next/image'
 import { supabase } from '@/lib/supabase'
 import type { Program } from '@/types'
 
+const FALLBACK_PROGRAMS: Program[] = [
+  { id: '1', title: 'Buenos Días CORPOSEPI', host: 'Noticias educativas y reflexión matutina', start_time: '06:00', end_time: '08:00', days: 'weekdays', description: null, is_active: true, order_num: 1 },
+  { id: '2', title: 'Pensamiento Innovador', host: 'Debates pedagógicos y tendencias educativas', start_time: '08:00', end_time: '10:00', days: 'weekdays', description: null, is_active: true, order_num: 2 },
+  { id: '3', title: 'Voces Estudiantiles', host: 'Espacio de estudiantes y proyectos escolares', start_time: '10:00', end_time: '12:00', days: 'all', description: null, is_active: true, order_num: 3 },
+  { id: '4', title: 'Descanso Cultural', host: 'Música, arte y cultura regional', start_time: '12:00', end_time: '14:00', days: 'all', description: null, is_active: true, order_num: 4 },
+  { id: '5', title: 'Familia y Educación', host: 'Orientación para padres y comunidad', start_time: '14:00', end_time: '16:00', days: 'all', description: null, is_active: true, order_num: 5 },
+  { id: '6', title: 'Tarde Juvenil', host: 'Contenido para jóvenes: música, cultura y más', start_time: '16:00', end_time: '18:00', days: 'all', description: null, is_active: true, order_num: 6 },
+]
+
 // URLs HTTPS del stream — siempre seguras
 const STREAM_URL = 'https://play14.tikast.com:20126/stream'
 const FALLBACK_URL = 'https://play14.tikast.com:20126/;'
@@ -29,24 +38,31 @@ export default function HomePage() {
 
   // Fetch programs + real-time
   const fetchPrograms = useCallback(async () => {
+    if (!supabase) {
+      setPrograms(FALLBACK_PROGRAMS)
+      setLoading(false)
+      return
+    }
     const { data } = await supabase
       .from('programs')
       .select('*')
       .eq('is_active', true)
       .order('order_num', { ascending: true })
-    if (data) setPrograms(data)
+    setPrograms(data && data.length > 0 ? data : FALLBACK_PROGRAMS)
     setLoading(false)
   }, [])
 
   useEffect(() => {
     fetchPrograms()
 
-    const channel = supabase
+    if (!supabase) return
+    const client = supabase
+    const channel = client
       .channel('programs-public')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'programs' }, fetchPrograms)
       .subscribe()
 
-    return () => { supabase.removeChannel(channel) }
+    return () => { client.removeChannel(channel) }
   }, [fetchPrograms])
 
   // Current hour updater

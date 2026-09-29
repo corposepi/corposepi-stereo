@@ -17,6 +17,8 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   const body = await req.json()
   const { title, host, description, start_time, end_time, days, is_active, order_num } = body
 
+  if (!supabaseAdmin) return NextResponse.json({ error: 'Base de datos no configurada' }, { status: 503 })
+
   const { data, error } = await supabaseAdmin
     .from('programs')
     .update({
@@ -38,6 +40,8 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
   if (!(await authenticate(req))) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   }
+
+  if (!supabaseAdmin) return NextResponse.json({ error: 'Base de datos no configurada' }, { status: 503 })
 
   const { error } = await supabaseAdmin
     .from('programs')

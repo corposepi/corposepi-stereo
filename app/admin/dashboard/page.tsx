@@ -289,7 +289,7 @@ export default function DashboardPage() {
               <div className="form-group full">
                 <label className="form-label">Conductor / Host</label>
                 <input type="text" className="form-input" placeholder="Ej: Lic. María González"
-                  value={form.host} onChange={e => setForm(f => ({ ...f, host: e.target.value }))} />
+                  value={form.host ?? ''} onChange={e => setForm(f => ({ ...f, host: e.target.value }))} />
               </div>
 
               {/* Descripción */}
@@ -297,7 +297,7 @@ export default function DashboardPage() {
                 <label className="form-label">Descripción</label>
                 <textarea className="form-input" rows={3}
                   placeholder="Breve descripción del programa..."
-                  value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
+                  value={form.description ?? ''} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
               </div>
 
               {/* Hora inicio */}
